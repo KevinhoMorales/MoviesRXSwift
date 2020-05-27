@@ -15,7 +15,7 @@ class ManagerConnections {
         
         return Observable.create { obsever in
             let session = URLSession.shared
-            var request = URLRequest(url: URL(string: Constants.URL.main + Constants.Endpoints.urlListPopularMovies)!)
+            var request = URLRequest(url: URL(string: Constants.URL.main + Constants.Endpoints.urlListPopularMovies + Constants.apiKey)!)
             request.httpMethod = "GET"
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             session.dataTask(with: request) { (data, response, error) in
@@ -24,6 +24,7 @@ class ManagerConnections {
                     do {
                         let decoder = JSONDecoder()
                         let movies = try decoder.decode(Movies.self, from: data)
+                        print("Movies \(movies.listOfMovies[0])")
                         obsever.onNext(movies.listOfMovies)
                     } catch let error {
                         obsever.onError(error)
