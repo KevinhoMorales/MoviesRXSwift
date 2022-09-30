@@ -20,6 +20,13 @@ class HomeViewModel {
         self.router = router
         //bindear el router con la vista
         self.router?.setSourceView(view)
+        setUpCell()
+    }
+    
+    private func setUpCell() {
+        let tableViewCell = UINib(nibName: "HomeTableViewCell", bundle: nil)
+        view?.tableView.register(tableViewCell, forCellReuseIdentifier: HomeTableViewCell.CELL_ID)
+        view?.tableView.tableFooterView = UIView()
     }
     
     func getlistMovieData() -> Observable<[Movie]> {
