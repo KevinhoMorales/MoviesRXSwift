@@ -24,10 +24,6 @@
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="oaK-Ue-Qqt">
                     <rect key="frame" x="0.0" y="48" width="414" height="848"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <connections>
-                        <outlet property="dataSource" destination="-1" id="b2G-AW-ACc"/>
-                        <outlet property="delegate" destination="-1" id="VaC-b1-6qW"/>
-                    </connections>
                 </tableView>
                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="oxm-6H-ZaI">
                     <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>

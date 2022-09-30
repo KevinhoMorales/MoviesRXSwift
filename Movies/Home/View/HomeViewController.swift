@@ -8,6 +8,8 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
+import SafariServices
 
 class HomeViewController: UIViewController {
     
@@ -16,7 +18,7 @@ class HomeViewController: UIViewController {
     private var router = HomeRouter()
     private var viewModel = HomeViewModel()
     private var disposeBag = DisposeBag()
-    private var movies = [Movie]()
+    private var movies: BehaviorRelay<[Movie]> = BehaviorRelay(value: [])
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,10 +27,42 @@ class HomeViewController: UIViewController {
     }
     
     private func setUpView() {
+        initView()
+        // TableView - RxSwift
+        setUpTableView()
+        setUpDidSelectedTableView()
+        setUpTableViewDelegate()
         getData()
+    }
+    
+    private func initView() {
         self.title = "Movies"
         self.navigationItem.largeTitleDisplayMode = .always
         self.navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    private func setUpTableView() {
+        movies.bind(to: tableView.rx.items(cellIdentifier: HomeTableViewCell.CELL_ID)) { row, model, cell in
+            let newCell = cell as! HomeTableViewCell
+            newCell.setUpView(movie: model)
+        }.disposed(by: disposeBag)
+    }
+    
+    private func setUpDidSelectedTableView() {
+        tableView.rx.modelSelected(Movie.self)
+            .map{ URL(string: Constants.URL.urlImagesMovies + $0.image) }
+            .subscribe(onNext: { [weak self] url in
+                guard let url = url else {
+                    return
+                }
+                self?.present(SFSafariViewController(url: url), animated: true)
+            }).disposed(by: disposeBag)
+    }
+    
+    private func setUpTableViewDelegate() {
+        tableView
+            .rx.setDelegate(self)
+            .disposed(by: disposeBag)
     }
     
     private func getData() {
@@ -39,7 +73,7 @@ class HomeViewController: UIViewController {
         // Subscribir a el Observable
             .subscribe(
                 onNext: { movies in
-                    self.movies = movies
+                    self.movies.accept(movies)
                     self.reloadTableView()
             }, onError: { error in
                 print("Error \(error.localizedDescription)")
@@ -57,21 +91,10 @@ class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: HomeTableViewCell.CELL_ID, for: indexPath) as! HomeTableViewCell
-        let movie = movies[indexPath.row]
-        cell.setUpView(movie: movie)
-        return cell
-    }
-    
+extension HomeViewController: UITableViewDelegate {
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         165
     }
-    
+
 }

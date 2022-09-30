@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import RxRelay
 
 class ManagerConnections {
     
@@ -24,7 +25,6 @@ class ManagerConnections {
                     do {
                         let decoder = JSONDecoder()
                         let movies = try decoder.decode(Movies.self, from: data)
-                        print("Movies \(movies.listOfMovies[0])")
                         obsever.onNext(movies.listOfMovies)
                     } catch let error {
                         obsever.onError(error)
