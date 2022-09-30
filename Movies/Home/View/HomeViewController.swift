@@ -21,6 +21,10 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.bind(view: self, router: router)
+        setUpView()
+    }
+    
+    private func setUpView() {
         getData()
         self.title = "Movies"
         self.navigationItem.largeTitleDisplayMode = .always
@@ -67,7 +71,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        70
+        165
     }
     
 }
